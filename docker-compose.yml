@@ -1,0 +1,63 @@
+# version: '3'
+# services:
+#   app:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#     ports:
+#       - '8080:8080'
+#     environment:
+#       - DATABASE_URL=mysql://root:1724@localhost:3306/CAPSTONE_PINTEREST?schema=public
+#       - DOMAIN=localhost
+#       - PORT=8080
+#       - SECRET_KEY = eyJhbGciOiJIUzUxMiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY4NDIwODY5NywiaWF0IjoxNjg0MjA4Njk3fQ.6da9kcYHkp5U5a9WxtqnUkQXtcSd__lrUFE-JAzOUik32b5P0JuQKilEFurk5bIh7fTDCx57XWLxEEnucpIHDw
+#     volumes:
+#       - .:/usr/src/app
+#     depends_on:
+#       - db
+      
+#   db:
+#     image: mysql:latest
+#     command: --default-authentication-plugin=mysql_native_password
+#     restart: always
+#     environment:
+#       - MYSQL_ROOT_PASSWORD=1724
+#     ports:
+#       - '3306:3306'
+#     volumes:
+#       - ./mysql-data:/var/lib/mysql
+
+version: '3'
+services:
+  db:
+    image: mysql
+    container_name: db
+    environment:
+      - MYSQL_DATABASE=CAPSTONE_PINTEREST
+      - MYSQL_ROOT_PASSWORD=1724
+    ports:
+      - 3306:3306
+    volumes:
+      - db:/var/lib/mysql
+    networks:
+      - node-network
+  app:
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=mysql://root:1724@localhost:3306/CAPSTONE_PINTEREST?schema=public
+      - DOMAIN=localhost
+      - PORT=8080
+      - SECRET_KEY = eyJhbGciOiJIUzUxMiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY4NDIwODY5NywiaWF0IjoxNjg0MjA4Njk3fQ.6da9kcYHkp5U5a9WxtqnUkQXtcSd__lrUFE-JAzOUik32b5P0JuQKilEFurk5bIh7fTDCx57XWLxEEnucpIHDw
+    build: .
+    container_name: cons-nestjs
+    ports:
+      - 3100:8080
+    networks:
+      node-network
+
+volumes:
+  db:
+    driver: local
+networks:
+  node-network:
